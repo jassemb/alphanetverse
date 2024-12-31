@@ -108,18 +108,17 @@ const MultipleItems = () => {
         ],
     };
 
-
     return (
         <div id="Packes">
             <div className='mx-auto max-w-7xl sm:py-6 px-4 lg:px-4 '>
                 <div className="sm:flex sm:flex-col justify-between items-start">
                     <h3 className="text-midnightblue text-4xl lg:text-5xl font-semibold mb-5 sm:mb-2">Description de Notre Application Web</h3>
-                    <p className="text-lg mb-4">Chez Netverse, chaque pack que nous proposons est bien plus qu'un simple produit, c'est un service de formation certifié, conçu pour vous accompagner dans votre parcours de croissance personnelle et professionnelle. Découvrez nos offres adaptées à vos besoins et commencez votre aventure avec Netverse, seulement pour <span className="font-bold text-xl">99AC</span>.</p>
+                    <p className="text-lg mb-4">Chez Netverse, chaque pack que nous proposons est bien plus qu&apos;un simple produit, c&apos;est un service de formation certifié, conçu pour vous accompagner dans votre parcours de croissance personnelle et professionnelle. Découvrez nos offres adaptées à vos besoins et commencez votre aventure avec Netverse, seulement pour <span className="font-bold text-xl">99AC</span>.</p>
                 </div>
 
                 <Slider {...settings}>
                     {postData.map((items, i) => (
-                        <div>
+                        <div key={i}>
                             <div className='bg-white m-3 px-3 pt-3 pb-12 my-20 shadow-Packes rounded-2xl'>
                                 <div className="relative rounded-3xl">
                                     <Image src={items.imgSrc} alt="Pack Image" width={389} height={262} className="m-auto clipPath" />
@@ -145,58 +144,57 @@ const MultipleItems = () => {
                 </Slider>
 
                 <Transition appear show={open} as={Fragment}>
-                <Dialog as="div" className="relative z-10" onClose={handleClose}>
-                    <Transition.Child
-                        as={Fragment}
-                        enter="ease-out duration-300"
-                        enterFrom="opacity-0"
-                        enterTo="opacity-100"
-                        leave="ease-in duration-200"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                    >
-                        <div className="fixed inset-0 bg-black bg-opacity-25" />
-                    </Transition.Child>
+                    <Dialog as="div" className="relative z-10" onClose={handleClose}>
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0"
+                            enterTo="opacity-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100"
+                            leaveTo="opacity-0"
+                        >
+                            <div className="fixed inset-0 bg-black bg-opacity-25" />
+                        </Transition.Child>
 
-                    <div className="fixed inset-0 overflow-y-auto">
-                        <div className="flex min-h-full items-center justify-center p-4 text-center">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 scale-95"
-                                enterTo="opacity-100 scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 scale-100"
-                                leaveTo="opacity-0 scale-95"
-                            >
-                                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                        <div className="fixed inset-0 overflow-y-auto">
+                            <div className="flex min-h-full items-center justify-center p-4 text-center">
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0 scale-95"
+                                    enterTo="opacity-100 scale-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100 scale-100"
+                                    leaveTo="opacity-0 scale-95"
+                                >
+                                    <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
 
-                                    <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-                                        <div className="w-full max-w-md space-y-8">
-                                            <div>
-                                                <img
-                                                    className="mx-auto h-12 w-auto"
-                                                    src="/assets/logo/logo2.svg"
-                                                    alt="Your Company"
-                                                />
-                                                <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-                                                    Sign in to your account
-                                                </h2>
+                                        <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+                                            <div className="w-full max-w-md space-y-8">
+                                                <div>
+                                                    <img
+                                                        className="mx-auto h-12 w-auto"
+                                                        src="/assets/logo/logo2.svg"
+                                                        alt="Your Company"
+                                                    />
+                                                    <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+                                                        Sign in to your account
+                                                    </h2>
+                                                </div>
+
                                             </div>
-                                            
                                         </div>
-                                    </div>
 
-                                    <div className="mt-4 flex justify-end">
-                                     Got it, thanks!
-                                        
-                                    </div>
-                                </Dialog.Panel>
-                            </Transition.Child>
+                                        <div className="mt-4 flex justify-end">
+                                            Got it, thanks!
+                                        </div>
+                                    </Dialog.Panel>
+                                </Transition.Child>
+                            </div>
                         </div>
-                    </div>
-                </Dialog>
-            </Transition>
+                    </Dialog>
+                </Transition>
             </div>
         </div>
     );
