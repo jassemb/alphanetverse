@@ -23,7 +23,7 @@ const Aboutus = () => {
     };
 
     return (
-        <div id="aboutus" className={`${images[currentImageIndex].theme} transition-all duration-500`}>
+        <div id="aboutus" className={`${images[currentImageIndex].theme}  ml-10 transition-all duration-500`}>
             <div className="mx-auto max-w-8xl pt-2 sm:pb-6 px-6">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     {/* Right Section with Image Carousel */}

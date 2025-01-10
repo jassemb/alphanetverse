@@ -1,4 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  output: 'export',
+  productionBrowserSourceMaps: false, // Disable source maps in production
+  trailingSlash: true,
 
-module.exports = nextConfig
+};
+
+module.exports = nextConfig;
