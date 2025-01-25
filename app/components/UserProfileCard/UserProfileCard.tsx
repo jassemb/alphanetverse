@@ -8,11 +8,14 @@ import { IoMdTrendingUp } from "react-icons/io";
 const UserProfileCard = () => {
   const [copied, setCopied] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  
+
+  const email = localStorage.getItem("email");
 
   const userData = {
     id: "user123",
     name: "Alexander Mitchell",
-    designation: "Senior Product Manager",
+    designation: email,
     verified: true,
     avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
     walletAddress: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",

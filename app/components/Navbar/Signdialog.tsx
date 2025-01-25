@@ -47,6 +47,7 @@ const Signin: React.FC = () => {
             console.log('API Response:', data);
     
             if (response.ok) {
+                console.log(data);
                 if (data.access) {
                     localStorage.setItem('token', data.access);
                     console.log('Access token saved:', data.access);

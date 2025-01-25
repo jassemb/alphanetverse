@@ -28,6 +28,7 @@ export default NextAuth({
         console.log(data);
 
 if (res.ok && data.token) {
+  localStorage.setItem("email", data.user.email); // Store the token in localStorage
   return {
     id: data.user.id,
     email: data.user.email,
