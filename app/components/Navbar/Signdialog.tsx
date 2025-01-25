@@ -10,12 +10,11 @@ const Signin: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
-
+    
 
     useEffect(() => {
         setIsMounted(true);
         const token = localStorage.getItem('token');
-        console.log(token);
         if (token) {
             router.push('/Mainpage');
         }
