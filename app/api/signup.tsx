@@ -41,8 +41,8 @@ interface SignupResponse {
           phone: userData.phone,  // Ensure it's sent as phone_number
           first_name: userData.firstName,      // Added first_name
           last_name: userData.lastName,        // Added last_name
-          referral_code: referralCode,       // Ensure it's sent as referral_code
-          country: userData.country
+          referral_code: referralCode,
+          country: userData.country         // Ensure it's sent as referral_code
         }),
       });
   

@@ -3,36 +3,68 @@ import { Fragment, useState, useEffect } from 'react'
 import { LockClosedIcon } from '@heroicons/react/20/solid'
 import { useRouter } from 'next/navigation'
 
+
 const Signin: React.FC = () => {
-    const [isOpen, setIsOpen] = useState(false)
-    const [isMounted, setIsMounted] = useState(false) // Track if component is mounted
-    const router = useRouter() // Initialize the router
+    const [isOpen, setIsOpen] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const router = useRouter();
 
     useEffect(() => {
-        // Set mounted state to true after the component mounts on the client
-        setIsMounted(true)
-    }, [])
+        setIsMounted(true);
+    }, []);
 
     const closeModal = () => {
-        setIsOpen(false)
-    }
+        setIsOpen(false);
+    };
 
     const openModal = () => {
-        setIsOpen(true)
-    }
+        setIsOpen(true);
+    };
 
-    const handleLogin = (e: React.FormEvent) => {
-        e.preventDefault() // Prevent the default form submission
-        // Check if useRouter is mounted on the client-side
-        if (isMounted) {
-            router.push('/Mainpage')
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+    
+        try {
+            const response = await fetch('http://51.77.230.180:8000/api/v1/auth/jwt/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email,
+                    password,
+                }),
+            });
+    
+            const data = await response.json();
+            console.log('API Response:', data);
+    
+            if (response.ok) {
+                if (data.access) {
+                    localStorage.setItem('token', data.access);
+                    console.log('Access token saved:', data.access);
+    
+                    // Defer the navigation to avoid the render issue
+                    setTimeout(() => {
+                        router.push('/Mainpage');
+                    }, 0);  // This defers the push call until after the current render
+                } else {
+                    alert('No access token received from the server');
+                }
+            } else {
+                alert('Invalid credentials');
+            }
+        } catch (error) {
+            console.error('Error during login:', error);
+            alert('An error occurred. Please try again.');
         }
-    }
+    };
 
     if (!isMounted) {
-        return null // Prevent rendering this component during SSR
+        return null; // Prevent rendering the component during SSR
     }
-
     return (
         <>
             <div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:pr-0">
@@ -69,7 +101,6 @@ const Signin: React.FC = () => {
                                 leaveTo="opacity-0 scale-95"
                             >
                                 <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-
                                     <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
                                         <div className="w-full max-w-md space-y-8">
                                             <div>
@@ -97,6 +128,8 @@ const Signin: React.FC = () => {
                                                             required
                                                             className="relative block w-full appearance-none rounded-none rounded-t-md border border-grey500 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                                             placeholder="Email address"
+                                                            value={email}
+                                                            onChange={(e) => setEmail(e.target.value)}
                                                         />
                                                     </div>
                                                     <div>
@@ -111,6 +144,8 @@ const Signin: React.FC = () => {
                                                             required
                                                             className="relative block w-full appearance-none rounded-none rounded-b-md border border-grey500 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                                             placeholder="Password"
+                                                            value={password}
+                                                            onChange={(e) => setPassword(e.target.value)}
                                                         />
                                                     </div>
                                                 </div>

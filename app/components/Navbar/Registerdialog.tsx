@@ -2,6 +2,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useState } from 'react';
 import { LockClosedIcon } from '@heroicons/react/20/solid';
 import { signup } from '@/app/api/signup';
+import SuccessModal from '../SuccessModal/SuccessModal';
 
 type UserData = {
     firstName: string;
@@ -15,6 +16,9 @@ type UserData = {
 
 const Register = () => {
     let [isOpen, setIsOpen] = useState(false);
+    let [successOpen, setSuccessOpen] = useState(false);
+    let [errorMessage, setErrorMessage] = useState<string | null>(null); // State for error message
+    let [successMessage, setSuccessMessage] = useState<string | null>(null); // State for success message
 
     // State for form inputs
     const [firstName, setFirstName] = useState('');
@@ -25,13 +29,19 @@ const Register = () => {
     const [phone, setPhoneNumber] = useState('');
     const [country, setCountry] = useState('');
 
-    // State for error/success message
-    const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<string | null>(null);
-
     const closeModal = () => setIsOpen(false);
-
     const openModal = () => setIsOpen(true);
+
+    const closeSuccessModal = () => {
+        setSuccessOpen(false);
+        setFirstName('');
+        setLastName('');
+        setEmail('');
+        setPassword('');
+        setPhoneNumber('');
+        setReferralCode('');
+        setCountry('');
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -39,17 +49,14 @@ const Register = () => {
         const userData: UserData = { firstName, lastName, email, password, phone, referralCode, country };
 
         try {
-            // Log the data before sending the request to confirm it's formatted correctly
-            console.log('Sending signup request with data:', userData);
-
             const result = await signup(referralCode, userData);
-            setSuccess('Signup successful!');
-            setError(null); // Clear previous errors
-            console.log('Signup result:', result);
+            setSuccessMessage('Signup successful!');
+            setErrorMessage(null); // Clear error message
+            setSuccessOpen(true); // Open success modal
         } catch (error) {
-            console.error('Error during signup:', error);
-            setError('Signup failed. Please try again.');
-            setSuccess(null); // Clear success message if any
+            setErrorMessage('Signup failed. Please try again.');
+            setSuccessMessage(null); // Clear success message if any
+            setSuccessOpen(true); // Open error modal
         }
     };
 
@@ -106,8 +113,8 @@ const Register = () => {
                                             </div>
                                             <form className="mt-10 space-y-4" onSubmit={handleSubmit}>
                                                 <div className="space-y-4">
-                                                     {/* First Name */}
-                                                     <div>
+                                                    {/* First Name */}
+                                                    <div>
                                                         <label htmlFor="Country" className="sr-only">
                                                             country
                                                         </label>
@@ -176,7 +183,7 @@ const Register = () => {
                                                     {/* Phone Number */}
                                                     <div>
                                                         <label htmlFor="Phone-Number" className="sr-only">
-                                                            Phone Number 
+                                                            Phone Number
                                                         </label>
                                                         <input
                                                             id="Phone-Number"
@@ -239,10 +246,13 @@ const Register = () => {
                                                     </button>
                                                 </div>
                                             </form>
-
-                                            {/* Display error or success messages */}
-                                            {error && <p className="text-red-500 mt-2">{error}</p>}
-                                            {success && <p className="text-green-500 mt-2">{success}</p>}
+                                            {/* Success Modal */}
+                                            <SuccessModal 
+                                                isVisible={successOpen} 
+                                                onClose={closeSuccessModal} 
+                                                message={errorMessage || successMessage || undefined}
+                                                isError={!!errorMessage} 
+                                            />
                                         </div>
                                     </div>
 
