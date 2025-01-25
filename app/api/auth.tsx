@@ -25,15 +25,17 @@ export default NextAuth({
 
         const data = await res.json();
 
-        if (res.ok && data.token) {
-          return {
-            id: data.user.id,
-            email: data.user.email,
-            token: data.token, // This will now be recognized as valid
-          };
-        } else {
-          return null; // Authentication failed
-        }
+        console.log(data);
+
+if (res.ok && data.token) {
+  return {
+    id: data.user.id,
+    email: data.user.email,
+    token: data.token, // This will now be recognized as valid
+  };
+} else {
+  return null; // Authentication failed
+}
       },
     }),
   ],

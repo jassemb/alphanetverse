@@ -18,16 +18,7 @@ export default function Mainpage() {
   }
 
   // If no session (user not logged in), redirect to login page after mounting
-  useEffect(() => {
-    if (!session && !isRedirecting) {
-      setIsRedirecting(true); // Set the redirect flag to prevent multiple redirects
-      router.push("/"); // Redirect to login page
-    }
-  }, [session, router, isRedirecting]); // Now tracking isRedirecting in dependencies
 
-  if (!session) {
-    return null; // Or return a loading state while redirecting
-  }
 
   return (
     <div className="min-h-screen flex flex-col">

@@ -11,9 +11,15 @@ const Signin: React.FC = () => {
     const [password, setPassword] = useState('');
     const router = useRouter();
 
+
     useEffect(() => {
         setIsMounted(true);
-    }, []);
+        const token = localStorage.getItem('token');
+        console.log(token);
+        if (token) {
+            router.push('/Mainpage');
+        }
+    }, [router]);
 
     const closeModal = () => {
         setIsOpen(false);

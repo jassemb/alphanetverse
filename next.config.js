@@ -6,7 +6,12 @@ const nextConfig = {
   // Uncomment if using export mode:
   // output: 'export'
   images: {
-    domains: ['images.unsplash.com'], // Add this line
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ],
   },
 };
 
