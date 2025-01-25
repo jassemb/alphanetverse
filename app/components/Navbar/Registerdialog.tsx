@@ -4,20 +4,26 @@ import { LockClosedIcon } from '@heroicons/react/20/solid';
 import { signup } from '@/app/api/signup';
 
 type UserData = {
+    firstName: string;
+    lastName: string;
     email: string;
     password: string;
-    phoneNumber: string;
+    phone: string;
     referralCode: string;
+    country: string;
 };
 
 const Register = () => {
     let [isOpen, setIsOpen] = useState(false);
 
     // State for form inputs
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [referralCode, setReferralCode] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
+    const [phone, setPhoneNumber] = useState('');
+    const [country, setCountry] = useState('');
 
     // State for error/success message
     const [error, setError] = useState<string | null>(null);
@@ -30,7 +36,7 @@ const Register = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const userData: UserData = { email, password, phoneNumber, referralCode };
+        const userData: UserData = { firstName, lastName, email, password, phone, referralCode, country };
 
         try {
             // Log the data before sending the request to confirm it's formatted correctly
@@ -100,6 +106,57 @@ const Register = () => {
                                             </div>
                                             <form className="mt-10 space-y-4" onSubmit={handleSubmit}>
                                                 <div className="space-y-4">
+                                                     {/* First Name */}
+                                                     <div>
+                                                        <label htmlFor="Country" className="sr-only">
+                                                            country
+                                                        </label>
+                                                        <input
+                                                            id="Country"
+                                                            name="Country"
+                                                            type="text"
+                                                            required
+                                                            className="relative block w-full appearance-none rounded-none rounded-t-md border border-grey500 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                                            placeholder="Country"
+                                                            value={country}
+                                                            onChange={(e) => setCountry(e.target.value)}
+                                                        />
+                                                    </div>
+                                                    {/* First Name */}
+                                                    <div>
+                                                        <label htmlFor="first-name" className="sr-only">
+                                                            First Name
+                                                        </label>
+                                                        <input
+                                                            id="first-name"
+                                                            name="firstName"
+                                                            type="text"
+                                                            required
+                                                            className="relative block w-full appearance-none rounded-none rounded-t-md border border-grey500 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                                            placeholder="First Name"
+                                                            value={firstName}
+                                                            onChange={(e) => setFirstName(e.target.value)}
+                                                        />
+                                                    </div>
+
+                                                    {/* Last Name */}
+                                                    <div>
+                                                        <label htmlFor="last-name" className="sr-only">
+                                                            Last Name
+                                                        </label>
+                                                        <input
+                                                            id="last-name"
+                                                            name="lastName"
+                                                            type="text"
+                                                            required
+                                                            className="relative block w-full appearance-none rounded-none rounded-t-md border border-grey500 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                                            placeholder="Last Name"
+                                                            value={lastName}
+                                                            onChange={(e) => setLastName(e.target.value)}
+                                                        />
+                                                    </div>
+
+                                                    {/* Referral Code */}
                                                     <div>
                                                         <label htmlFor="Code-parent" className="sr-only">
                                                             Code parent
@@ -115,6 +172,8 @@ const Register = () => {
                                                             onChange={(e) => setReferralCode(e.target.value)}
                                                         />
                                                     </div>
+
+                                                    {/* Phone Number */}
                                                     <div>
                                                         <label htmlFor="Phone-Number" className="sr-only">
                                                             Phone Number 
@@ -126,10 +185,12 @@ const Register = () => {
                                                             required
                                                             className="relative block w-full appearance-none rounded-none rounded-t-md border border-grey500 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                                             placeholder="Phone Number"
-                                                            value={phoneNumber}
+                                                            value={phone}
                                                             onChange={(e) => setPhoneNumber(e.target.value)}
                                                         />
                                                     </div>
+
+                                                    {/* Email Address */}
                                                     <div>
                                                         <label htmlFor="email-address" className="sr-only">
                                                             Email address
@@ -146,6 +207,8 @@ const Register = () => {
                                                             onChange={(e) => setEmail(e.target.value)}
                                                         />
                                                     </div>
+
+                                                    {/* Password */}
                                                     <div>
                                                         <label htmlFor="password" className="sr-only">
                                                             Password

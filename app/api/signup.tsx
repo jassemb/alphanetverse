@@ -1,3 +1,5 @@
+import { count } from "console";
+
 interface SignupResponse {
     success: boolean;
     message: string;
@@ -7,7 +9,10 @@ interface SignupResponse {
   interface UserData {
     email: string;
     password: string;
-    phoneNumber: string;
+    phone: string;
+    firstName: string;
+    lastName: string;
+    country: string;
   }
   
   export async function signup(referralCode: string, userData: UserData): Promise<SignupResponse> {
@@ -16,8 +21,11 @@ interface SignupResponse {
       console.log('Sending request with data:', {
         email: userData.email,
         password: userData.password,
-        phone_number: userData.phoneNumber,
-        referral_code: referralCode
+        phone: userData.phone,
+        first_name: userData.firstName,
+        last_name: userData.lastName,
+        referral_code: referralCode,
+        country: userData.country
       });
   
       const response = await fetch(`http://51.77.230.180:8000/api/v2/auth/register/${referralCode}`, {
@@ -30,8 +38,11 @@ interface SignupResponse {
         body: JSON.stringify({
           email: userData.email,
           password: userData.password,
-          phone_number: userData.phoneNumber,  // Ensure it's sent as phone_number
-          referral_code: referralCode,        // Ensure it's sent as referral_code
+          phone: userData.phone,  // Ensure it's sent as phone_number
+          first_name: userData.firstName,      // Added first_name
+          last_name: userData.lastName,        // Added last_name
+          referral_code: referralCode,       // Ensure it's sent as referral_code
+          country: userData.country
         }),
       });
   
