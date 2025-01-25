@@ -10,7 +10,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname(); // Get the current path
-  const excludedPaths = ['/Mainpage',]; // Paths to exclude the Navbar and Footer
+  const excludedPaths = ['/Mainpage','/Dashbord','/Tree']; // Paths to exclude the Navbar and Footer
   return (
     <html lang="en">
       <body>

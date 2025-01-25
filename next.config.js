@@ -4,7 +4,10 @@ const nextConfig = {
   trailingSlash: false, // Adjust if needed
   distDir: '.next', // Use default unless explicitly required
   // Uncomment if using export mode:
-  // output: 'export',
+  // output: 'export'
+  images: {
+    domains: ['images.unsplash.com'], // Add this line
+  },
 };
 
 module.exports = nextConfig;

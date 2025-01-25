@@ -1,17 +1,51 @@
-import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useState } from 'react'
-import { LockClosedIcon } from '@heroicons/react/20/solid'
+import { Dialog, Transition } from '@headlessui/react';
+import { Fragment, useState } from 'react';
+import { LockClosedIcon } from '@heroicons/react/20/solid';
+import { signup } from '@/app/api/signup';
+
+type UserData = {
+    email: string;
+    password: string;
+    phoneNumber: string;
+    referralCode: string;
+};
 
 const Register = () => {
-    let [isOpen, setIsOpen] = useState(false)
+    let [isOpen, setIsOpen] = useState(false);
 
-    const closeModal = () => {
-        setIsOpen(false)
-    }
+    // State for form inputs
+    const [referralCode, setReferralCode] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
 
-    const openModal = () => {
-        setIsOpen(true)
-    }
+    // State for error/success message
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
+
+    const closeModal = () => setIsOpen(false);
+
+    const openModal = () => setIsOpen(true);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const userData: UserData = { email, password, phoneNumber, referralCode };
+
+        try {
+            // Log the data before sending the request to confirm it's formatted correctly
+            console.log('Sending signup request with data:', userData);
+
+            const result = await signup(referralCode, userData);
+            setSuccess('Signup successful!');
+            setError(null); // Clear previous errors
+            console.log('Signup result:', result);
+        } catch (error) {
+            console.error('Error during signup:', error);
+            setError('Signup failed. Please try again.');
+            setSuccess(null); // Clear success message if any
+        }
+    };
 
     return (
         <>
@@ -52,7 +86,6 @@ const Register = () => {
                                 leaveTo="opacity-0 scale-95"
                             >
                                 <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-
                                     <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
                                         <div className="w-full max-w-md space-y-8">
                                             <div>
@@ -65,20 +98,21 @@ const Register = () => {
                                                     Register your account
                                                 </h2>
                                             </div>
-                                            <form className="mt-10 space-y-4" action="#" method="POST">
-                                                <input type="hidden" name="remember" defaultValue="true" />
+                                            <form className="mt-10 space-y-4" onSubmit={handleSubmit}>
                                                 <div className="space-y-4">
                                                     <div>
                                                         <label htmlFor="Code-parent" className="sr-only">
                                                             Code parent
                                                         </label>
                                                         <input
-                                                            id="Code parent"
-                                                            name="Code parent"
+                                                            id="Code-parent"
+                                                            name="codeParent"
                                                             type="text"
                                                             required
                                                             className="relative block w-full appearance-none rounded-none rounded-t-md border border-grey500 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                                             placeholder="Code parent"
+                                                            value={referralCode}
+                                                            onChange={(e) => setReferralCode(e.target.value)}
                                                         />
                                                     </div>
                                                     <div>
@@ -86,12 +120,14 @@ const Register = () => {
                                                             Phone Number 
                                                         </label>
                                                         <input
-                                                            id="Phone Number"
-                                                            name="Phone_Number"
+                                                            id="Phone-Number"
+                                                            name="phoneNumber"
                                                             type="text"
                                                             required
                                                             className="relative block w-full appearance-none rounded-none rounded-t-md border border-grey500 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                                             placeholder="Phone Number"
+                                                            value={phoneNumber}
+                                                            onChange={(e) => setPhoneNumber(e.target.value)}
                                                         />
                                                     </div>
                                                     <div>
@@ -106,6 +142,8 @@ const Register = () => {
                                                             required
                                                             className="relative block w-full appearance-none rounded-none rounded-t-md border border-grey500 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                                             placeholder="Email address"
+                                                            value={email}
+                                                            onChange={(e) => setEmail(e.target.value)}
                                                         />
                                                     </div>
                                                     <div>
@@ -120,23 +158,11 @@ const Register = () => {
                                                             required
                                                             className="relative block w-full appearance-none rounded-none rounded-b-md border border-grey500 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                                             placeholder="Password"
+                                                            value={password}
+                                                            onChange={(e) => setPassword(e.target.value)}
                                                         />
                                                     </div>
                                                 </div>
-
-                                                {/* <div className="flex items-center justify-between">
-                                                    <div className="flex items-center">
-                                                        <input
-                                                            id="remember-me"
-                                                            name="remember-me"
-                                                            type="checkbox"
-                                                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                                        />
-                                                        <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                                                            Remember me
-                                                        </label>
-                                                    </div>
-                                                </div> */}
 
                                                 <div>
                                                     <button
@@ -150,13 +176,17 @@ const Register = () => {
                                                     </button>
                                                 </div>
                                             </form>
+
+                                            {/* Display error or success messages */}
+                                            {error && <p className="text-red-500 mt-2">{error}</p>}
+                                            {success && <p className="text-green-500 mt-2">{success}</p>}
                                         </div>
                                     </div>
 
                                     <div className="mt-4 flex justify-end">
                                         <button
                                             type="button"
-                                            className="inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-blue-900 "
+                                            className="inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-blue-900"
                                             onClick={closeModal}
                                         >
                                             Got it, thanks!
@@ -169,7 +199,7 @@ const Register = () => {
                 </Dialog>
             </Transition>
         </>
-    )
-}
+    );
+};
 
 export default Register;
