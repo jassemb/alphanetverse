@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, memo } from "react";
 import { useRouter } from "next/navigation";
 import { FiChevronRight, FiChevronDown, FiUser } from "react-icons/fi";
 import { BsShieldFillCheck } from "react-icons/bs";
+import Image from "next/image";
 
 type TreeNodeProps = {
   node: any;
@@ -13,7 +14,7 @@ const TreeNode: React.FC<TreeNodeProps> = memo(({ node, level }) => {
   const toggleExpand = useCallback(() => {
     setIsExpanded(!isExpanded);
   }, [isExpanded]);
-
+  TreeNode.displayName = "TreeNode";
   const hasChildren = node.children && node.children.length > 0;
 
   return (
@@ -25,7 +26,7 @@ const TreeNode: React.FC<TreeNodeProps> = memo(({ node, level }) => {
       >
         <div className="relative w-10 h-10 rounded-full overflow-hidden bg-gray-200">
           {node.imageUrl ? (
-            <img
+            <Image
               src={node.imageUrl}
               alt={node.name}
               className="w-full h-full object-cover"
