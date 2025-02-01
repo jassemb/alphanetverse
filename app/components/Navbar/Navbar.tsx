@@ -39,14 +39,21 @@ const CustomLink = ({ href, onClick, children }: { href: string; onClick: () => 
     );
 };
 
-
 const Navbar = () => {
-    const [isOpen, setIsOpen] = React.useState(false);
-
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isSignDialogOpen, setIsSignDialogOpen] = useState(false);
+    const [isSignupdialogProps, setIsSignupdialogProps] = useState(false);
     const [currentLink, setCurrentLink] = useState('/');
 
     const handleLinkClick = (href: string) => {
         setCurrentLink(href);
+    };
+
+    const openSignDialog = () => {
+        setIsSignDialogOpen(true);
+    };
+    const openSignupDialog = () => {
+        setIsSignupdialogProps(true);
     };
 
     return (
@@ -55,9 +62,7 @@ const Navbar = () => {
                 <div className="mx-auto max-w-7xl px-6 py-4 lg:px-8">
                     <div className="relative flex h-12 md:h-20 items-center justify-between">
                         <div className="flex flex-1 items-center sm:items-stretch sm:justify-start">
-
                             {/* LOGO */}
-
                             <div className="flex flex-shrink-0 items-center">
                                 <img
                                     className="block h-12 w-40 lg:hidden"
@@ -72,7 +77,6 @@ const Navbar = () => {
                             </div>
 
                             {/* LINKS */}
-
                             <div className="hidden lg:block m-auto">
                                 <div className="flex space-x-4">
                                     {navigation.map((item) => (
@@ -97,30 +101,21 @@ const Navbar = () => {
                         </div>
 
                         {/* SIGNIN DIALOG */}
-
-                        <Signdialog />
-
+                        <Signdialog isOpen={isSignDialogOpen} setIsOpen={setIsSignDialogOpen} />
 
                         {/* REGISTER DIALOG */}
-
-                        <Registerdialog />
-
+                        <Registerdialog isOpen={isSignupdialogProps} setIsOpen={setIsSignupdialogProps} />
 
                         {/* DRAWER FOR MOBILE VIEW */}
-
-                        {/* DRAWER ICON */}
-
                         <div className='block lg:hidden'>
-                            <Bars3Icon className="block h-6 w-6" aria-hidden="true" onClick={() => setIsOpen(true)} />
+                            <Bars3Icon className="block h-6 w-6" aria-hidden="true" onClick={() => setIsDrawerOpen(true)} />
                         </div>
 
                         {/* DRAWER LINKS DATA */}
-
-                        <Drawer isOpen={isOpen} setIsOpen={setIsOpen}>
-                            <Drawerdata />
+                        <Drawer isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen}>
+                            <Drawerdata openSignDialog={openSignDialog}
+                                signupDialog={openSignupDialog} />
                         </Drawer>
-
-
                     </div>
                 </div>
             </>

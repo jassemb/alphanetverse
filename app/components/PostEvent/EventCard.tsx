@@ -1,5 +1,5 @@
-import React from "react";
-import { FaCalendarAlt, FaMapMarkerAlt, FaUsers } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaCalendarAlt, FaMapMarkerAlt, FaUsers, FaTimes, FaNetworkWired } from "react-icons/fa";
 import Image from "next/image";
 
 interface EventCardProps {
@@ -7,7 +7,7 @@ interface EventCardProps {
     title: string;
     description: string;
     startDate: string;
-    endDate: string;
+    
     location: string;
     image: string;
     creator: {
@@ -15,10 +15,13 @@ interface EventCardProps {
       avatar: string;
     };
     participants: number;
+    external_link: string;
   };
 }
 
 const EventCard: React.FC<EventCardProps> = ({ eventData }) => {
+  const [isVisible, setIsVisible] = useState(true); // State to control visibility
+
   const formatDate = (dateString: string): string => {
     return new Date(dateString).toLocaleDateString("en-US", {
       weekday: "long",
@@ -30,9 +33,37 @@ const EventCard: React.FC<EventCardProps> = ({ eventData }) => {
     });
   };
 
+  // Function to extract URL from description
+  const extractUrl = (description: string): string | null => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const match = description.match(urlRegex);
+    return match ? match[0] : null;
+  };
+
+  // Function to remove URL from description
+  const removeUrlFromDescription = (description: string): string => {
+    return description.replace(/https?:\/\/[^\s]+/g, '');
+  };
+
+  // Extract the URL and set it in external_link
+  const externalLink = extractUrl(eventData.description) || eventData.external_link;
+
+  // Remove the URL from the description
+  const cleanedDescription = removeUrlFromDescription(eventData.description);
+
+  // Close button click handler
+  const handleClose = () => {
+    setIsVisible(false); // Hide the card
+  };
+
+  // Don't render the card if it's not visible
+  if (!isVisible) return null;
+
   return (
     <div className="max-w-2xl mx-auto p-4">
       <div className="bg-white rounded-xl shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+
+
         <div className="relative h-64">
           <Image
             src={eventData.image}
@@ -48,20 +79,30 @@ const EventCard: React.FC<EventCardProps> = ({ eventData }) => {
         <div className="p-6">
           <h1 className="text-2xl font-bold text-gray-800 mb-3">{eventData.title}</h1>
 
-          <p className="text-gray-600 mb-4">{eventData.description}</p>
+          {/* Display cleaned description */}
+          <p className="text-gray-600 mb-4">{cleanedDescription}</p>
 
           <div className="space-y-3 mb-4">
             <div className="flex items-center text-gray-700">
               <FaCalendarAlt className="mr-2" />
               <div>
                 <p className="text-sm">Start: {formatDate(eventData.startDate)}</p>
-                <p className="text-sm">End: {formatDate(eventData.endDate)}</p>
+                
               </div>
             </div>
 
             <div className="flex items-center text-gray-700">
-              <FaMapMarkerAlt className="mr-2" />
-              <span className="text-sm">{eventData.location}</span>
+              <FaNetworkWired className="mr-2" />
+              <a
+                href={externalLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-Blueviolet hover:underline"
+              >
+                {externalLink}
+              </a>
+
+
             </div>
           </div>
 

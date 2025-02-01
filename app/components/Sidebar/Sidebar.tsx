@@ -1,6 +1,6 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./accordion";
 
-import { ChevronDownIcon, Home, ListVideo, Menu, Mic2, Music, Network, Play, RadioIcon, SquareStack, User } from "lucide-react";
+import { ChevronDownIcon, Home,BookOpen, ListVideo, Menu, Mic2, Music, Network, Play, RadioIcon, SquareStack, User } from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
 import { ScrollArea } from "./scroll-area";
@@ -40,6 +40,13 @@ export function SidebarMenu() {
             name: "Tree",
             icon: <Network size={15} className="mr-2" />,
             href: "/Tree",
+            
+        },
+        {
+            label: "Courses",
+            name: "Search Courses",
+            icon: <BookOpen size={15} className="mr-2" />,
+            href: "/Courses",
             
         },
         

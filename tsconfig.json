@@ -35,7 +35,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "/var/www/html/types/**/*.ts"
-  ],
+, "app/api/auth/[...nextauth]/route.js"  ],
   "exclude": [
     "node_modules"
   ]

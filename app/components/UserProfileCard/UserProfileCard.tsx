@@ -1,31 +1,33 @@
-"use client";// This marks the component as a client-side component
+"use client"; // This marks the component as a client-side component
 import React, { useState } from "react";
 import { FaWallet, FaUserFriends, FaCopy, FaCheck, FaRegCopy, FaShareAlt, FaEdit } from "react-icons/fa";
 import { QRCodeSVG } from "qrcode.react";
 import { BsShieldFillCheck } from "react-icons/bs";
 import { IoMdTrendingUp } from "react-icons/io";
 
-const UserProfileCard = () => {
+interface UserProfileCardProps {
+  profileData: {
+    first_name: string;
+    last_name: string;
+    avatar: string;
+    designation: string;
+    referral_code: string;
+    walletBalance: number;
+    transactions: Array<{
+      id: number;
+      type: string;
+      amount: number;
+      date: string;
+    }> | null; // Ensure transactions can be null
+    subscription_status?: boolean;
+    networkSize: number;
+    subscription_type: string;
+  } | null; // Ensure profileData can be null
+}
+
+const UserProfileCard: React.FC<UserProfileCardProps> = ({ profileData }) => {
   const [copied, setCopied] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-
-  const userData = {
-    id: "user123",
-    name: "Alexander Mitchell",
-    designation: "Senior Product Manager",
-    verified: true,
-    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    walletAddress: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
-    walletBalance: 2547.89,
-    currency: "USD",
-    networkSize: 1234,
-    networkGrowth: 23.5,
-    transactions: [
-      { id: 1, type: "received", amount: 500, date: "2024-01-15" },
-      { id: 2, type: "sent", amount: -200, date: "2024-01-14" },
-      { id: 3, type: "received", amount: 300, date: "2024-01-13" }
-    ]
-  };
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -33,35 +35,43 @@ const UserProfileCard = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-  };
+
+  // Fallback profileData if it's null
+  if (!profileData) {
+    return (
+      <div className={`p-4 ${isDarkMode ? "dark bg-gray-900" : "bg-gray-100"}`}>
+        <div className="max-w-md mx-auto">No user data available</div>
+      </div>
+    );
+  }
 
   return (
     <div className={`p-4 ${isDarkMode ? "dark bg-gray-900" : "bg-gray-100"}`}>
-      <div className="max-w-md mx-auto"> 
-
+      <div className="max-w-md mx-auto">
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-3">
           <div className="flex flex-col md:flex-row items-center gap-4 mb-6">
             <div className="relative">
-              <img
-                src={userData.avatar}
-                alt={userData.name}
-                className="w-20 h-20 rounded-full object-cover border-4 border-blue-500" 
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1633332755192-727a05c4013d";
-                }}
-              />
-              {userData.verified && (
-                <div className="absolute -top-2 -right-2 bg-blue-500 p-1.5 rounded-full">
-                  <BsShieldFillCheck className="text-white text-lg" />
+
+              {!profileData.avatar && (
+                <div
+                  className="w-20 h-20 rounded-full flex items-center justify-center text-black bg-blue-500 font-bold text-lg border-4 border-blue-500"
+                >
+                  {profileData.first_name.charAt(0)}
+                  {profileData.last_name.charAt(0)}
+                </div>
+              )}
+              {profileData.subscription_status !== undefined && (
+                <div className="absolute -top-2 -right-2 p-1.5 rounded-full"
+                  style={{ backgroundColor: profileData.subscription_status === true ? 'green' : 'red' }}>
+                  <BsShieldFillCheck className={`text-white text-lg`} />
                 </div>
               )}
             </div>
 
             <div className="text-center md:text-left">
-              <h2 className="text-lg font-bold text-gray-800 dark:text-white">{userData.name}</h2> {/* Reduce font size */}
-              <p className="text-sm text-gray-600 dark:text-gray-300">{userData.designation}</p>
+              <p className="text-lg font-bold text-gray-800 dark:text-white">
+                {profileData.first_name} {profileData.last_name}
+              </p>
             </div>
           </div>
 
@@ -70,8 +80,8 @@ const UserProfileCard = () => {
               <h3 className="text-base font-semibold mb-3 text-gray-800 dark:text-white">Profile QR</h3>
               <div className="flex justify-center">
                 <QRCodeSVG
-                  value={userData.walletAddress}
-                  size={120} 
+                  value={profileData.referral_code}
+                  size={120}
                   level="H"
                   includeMargin={true}
                   className="p-2 bg-white rounded-lg"
@@ -87,15 +97,20 @@ const UserProfileCard = () => {
 
               <div className="mb-3">
                 <p className="text-xs text-gray-600 dark:text-gray-300">Balance</p>
-                <p className={`text-xl font-bold ${userData.walletBalance > 1000 ? "text-green-500" : "text-red-500"}`}>
-                  ${userData.walletBalance.toLocaleString()}
+                <p
+                  className={`text-xl font-bold ${profileData.walletBalance > 1000 ? "text-green-500" : "text-red-500"
+                    }`}
+                >
+                  ${profileData.walletBalance?.toLocaleString() || "0"}
                 </p>
               </div>
 
               <div className="flex items-center gap-2 mb-3">
-                <p className="text-xs text-gray-500 dark:text-gray-400 truncate flex-1">{userData.walletAddress}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 truncate flex-1">
+                  {profileData.referral_code}
+                </p>
                 <button
-                  onClick={() => handleCopy(userData.walletAddress)}
+                  onClick={() => handleCopy(profileData.referral_code)}
                   className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full transition-all"
                 >
                   {copied ? <FaCheck className="text-green-500" /> : <FaRegCopy className="text-gray-500" />}
@@ -103,14 +118,22 @@ const UserProfileCard = () => {
               </div>
 
               <div className="space-y-1.5">
-                {userData.transactions.map((tx) => (
-                  <div key={tx.id} className="flex items-center justify-between text-xs">
-                    <span className="text-gray-600 dark:text-gray-300">{tx.date}</span>
-                    <span className={tx.type === "received" ? "text-green-500" : "text-red-500"}>
-                      {tx.type === "received" ? "+" : "-"}${Math.abs(tx.amount)}
-                    </span>
-                  </div>
-                ))}
+                {profileData.transactions &&
+                  Array.isArray(profileData.transactions) &&
+                  profileData.transactions.length > 0 ? (
+                  profileData.transactions.map((tx) => (
+                    <div key={tx.id} className="flex items-center justify-between text-xs">
+                      <span className="text-gray-600 dark:text-gray-300">{tx.date}</span>
+                      <span
+                        className={tx.type === "received" ? "text-green-500" : "text-red-500"}
+                      >
+                        {tx.type === "received" ? "+" : "-"}${Math.abs(tx.amount)}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-600 dark:text-gray-300">No transactions available</p>
+                )}
               </div>
             </div>
 
@@ -123,20 +146,20 @@ const UserProfileCard = () => {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <p className="text-xs text-gray-600 dark:text-gray-300">Total Members</p>
-                  <p className="text-xl font-bold text-gray-800 dark:text-white">{userData.networkSize}</p>
+                  <p className="text-xl font-bold text-gray-800 dark:text-white">
+                    {profileData.networkSize}
+                  </p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-600 dark:text-gray-300">Growth Rate</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-300">your pack type</p>
                   <div className="flex items-center">
-                    <p className="text-xl font-bold text-green-500">{userData.networkGrowth}%</p>
+                    <p className="text-xl font-bold text-green-500">{profileData.subscription_type}</p>
                     <IoMdTrendingUp className="text-green-500 ml-2" />
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
-          
         </div>
       </div>
     </div>

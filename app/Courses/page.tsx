@@ -1,10 +1,12 @@
-"use client"; 
-import { useEffect, useState } from "react";
+"use client"
+import { useRouter } from "next/navigation";
 import { SidebarMenu } from "../components/Sidebar/Sidebar";
 import TopBar from "../components/Topbar/Topbar";
+import UserDashboard from "../components/UserDashbord/UserDashboard";
+import { useEffect, useState } from "react";
+import CoursesPage from "../components/Courses/Courses";
+import ComingSoonPage from "../components/Commingsoon/Commingsoon";
 
-import UserMatrixTree from "../components/Usertree/Usertree";
-import { useRouter } from "next/navigation";
 
 export default function Dashbordpage() {
   const router = useRouter();
@@ -44,10 +46,11 @@ export default function Dashbordpage() {
 
     fetchUserInfo();  // Call fetchUserInfo without needing a userId
   }, []);
+  
   return (
     <div className="min-h-screen flex flex-col">
       {/* TopBar */}
-      <TopBar userInfo={userInfo}/>
+      <TopBar userInfo={userInfo} />
 
       {/* Main Content */}
       <div className="flex flex-grow mt-16">
@@ -58,7 +61,7 @@ export default function Dashbordpage() {
 
         {/* Main Content - User Dashboard */}
         <div className="flex-grow ml-60 p-4">
-          <UserMatrixTree/>
+          <ComingSoonPage />
         </div>
       </div>
     </div>

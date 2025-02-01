@@ -1,8 +1,11 @@
-import { useState, ChangeEvent, FormEvent } from "react";
+"use client"
+import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { FiUser, FiMail, FiPhone, FiFileText, FiCamera } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 
 interface FormData {
-  name: string;
+  first_name: string;
+  last_name: string;
   email: string;
   phone: string;
   password: string;
@@ -10,7 +13,8 @@ interface FormData {
 }
 
 interface Errors {
-  name?: string;
+  first_name?: string;
+  last_name?: string;
   email?: string;
   phone?: string;
   password?: string;
@@ -18,16 +22,61 @@ interface Errors {
 
 const EditProfile: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
-    name: "John Doe",
-    email: "johndoe@example.com",
-    phone: "+1 (555) 123-4567",
-    password: "********",
-    profilePicture:
-      "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80",
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone: "",
+    password: "",
+    profilePicture: "",
   });
 
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [errors, setErrors] = useState<Errors>({});
+  const [isLoading, setIsLoading] = useState<boolean>(true); // To handle loading state
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        console.error("No token found. User is not authenticated.");
+        router.push("/"); // Redirect to login or homepage if token is not found
+        return;
+      }
+
+      try {
+        const response = await fetch("http://51.77.230.180:8000/api/v1/me/", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`, // Add the token to the Authorization header
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("User Info:", data);
+          setFormData({
+            first_name: data.first_name || "",
+            last_name: data.last_name || "",
+            email: data.email || "",
+            phone: data.phone || "",
+            password: "", // Password should not be fetched, it's just for the form input
+            profilePicture: data.profilePicture || "",
+          });
+          setIsLoading(false); // Once data is fetched, stop loading
+        } else {
+          const errorData = await response.json();
+          console.error("Error fetching user info:", errorData);
+        }
+      } catch (error) {
+        console.error("An error occurred while fetching user info:", error);
+      }
+    };
+
+    fetchUserInfo();
+  }, [router]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -51,7 +100,8 @@ const EditProfile: React.FC = () => {
 
   const validateForm = (): boolean => {
     const newErrors: Errors = {};
-    if (!formData.name.trim()) newErrors.name = "Name is required";
+    if (!formData.last_name.trim()) newErrors.last_name = "Name is required";
+    if (!formData.first_name.trim()) newErrors.first_name = "Name is required";
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -71,6 +121,10 @@ const EditProfile: React.FC = () => {
     }
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>; // Show loading indicator until data is fetched
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-6 sm:p-8">
@@ -79,18 +133,17 @@ const EditProfile: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex flex-col items-center mb-6">
             <div className="relative">
-              <img
-                src={previewImage || formData.profilePicture}
-                alt="Profile"
-                className="w-32 h-32 rounded-full object-cover border-4 border-gray-200"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src =
-                    "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80";
-                }}
-              />
+            {!formData.profilePicture && (
+                <div
+                  className="w-20 h-20 rounded-full flex items-center justify-center text-black bg-blue-500 font-bold text-lg border-4 border-blue-500"
+                >
+                  {formData.first_name.charAt(0)}
+                  {formData.last_name.charAt(0)}
+                </div>
+              )}
               <label
                 htmlFor="profile-picture"
-                className="absolute bottom-0 right-0 bg-blue-500 p-2 rounded-full cursor-pointer hover:bg-blue-600 transition-colors"
+                className="absolute bottom-0 right-0 bg-slategray p-2 rounded-full cursor-pointer hover:bg-blue-600 transition-colors"
               >
                 <FiCamera className="text-white w-5 h-5" />
                 <input
@@ -105,21 +158,39 @@ const EditProfile: React.FC = () => {
           </div>
 
           <div className="space-y-4">
-            <div>
-              <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
-                <FiUser className="mr-2" /> Name
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.name ? "border-red-500" : "border-gray-300"
-                }`}
-                placeholder="Enter your name"
-              />
-              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+            <div className="flex space-x-4">
+              <div className="w-1/2">
+                <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
+                  <FiUser className="mr-2" /> First Name
+                </label>
+                <input
+                  type="text"
+                  name="first_name"
+                  value={formData.first_name}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errors.first_name ? "border-red-500" : "border-gray-300"
+                  }`}
+                  placeholder="Enter your first name"
+                />
+                {errors.first_name && <p className="text-red-500 text-sm mt-1">{errors.first_name}</p>}
+              </div>
+              <div className="w-1/2">
+                <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
+                  <FiUser className="mr-2" /> Last Name
+                </label>
+                <input
+                  type="text"
+                  name="last_name"
+                  value={formData.last_name}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errors.last_name ? "border-red-500" : "border-gray-300"
+                  }`}
+                  placeholder="Enter your last name"
+                />
+                {errors.last_name && <p className="text-red-500 text-sm mt-1">{errors.last_name}</p>}
+              </div>
             </div>
 
             <div>

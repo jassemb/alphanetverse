@@ -1,14 +1,54 @@
-import CardList from "../components/Cards/CardList";
+"use client"
+import { useRouter } from "next/navigation";
 import { SidebarMenu } from "../components/Sidebar/Sidebar";
 import TopBar from "../components/Topbar/Topbar";
 import UserDashboard from "../components/UserDashbord/UserDashboard";
-import UserProfileCard from "../components/UserProfileCard/UserProfileCard";
+import { useEffect, useState } from "react";
+
 
 export default function Dashbordpage() {
+  const router = useRouter();
+  const [userInfo, setUserInfo] = useState<any>(null);  // State to store user info
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const token = localStorage.getItem('token');  // Get the JWT token from localStorage
+
+      if (!token) {
+        console.error("No token found. User is not authenticated.");
+        router.push('/');  // Redirect to login or homepage if token is not found
+        return;
+      }
+
+      try {
+        const response = await fetch("http://51.77.230.180:8000/api/v1/me/", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,  // Add the token to the Authorization header
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("User Info:", data);
+          setUserInfo(data);  // Update state with user data
+        } else {
+          const errorData = await response.json();
+          console.error("Error fetching user info:", errorData);
+        }
+      } catch (error) {
+        console.error("An error occurred while fetching user info:", error);
+      }
+    };
+
+    fetchUserInfo();  // Call fetchUserInfo without needing a userId
+  }, []);
+  
   return (
     <div className="min-h-screen flex flex-col">
       {/* TopBar */}
-      <TopBar />
+      <TopBar userInfo={userInfo} />
 
       {/* Main Content */}
       <div className="flex flex-grow mt-16">

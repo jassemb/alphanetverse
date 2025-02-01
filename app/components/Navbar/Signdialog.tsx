@@ -1,70 +1,60 @@
 import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useState, useEffect } from 'react'
+import { Fragment, useState, useEffect, FormEvent } from 'react'
 import { LockClosedIcon } from '@heroicons/react/20/solid'
 import { useRouter } from 'next/navigation'
 
+interface SigndialogProps {
+    isOpen: boolean;
+    setIsOpen: (isOpen: boolean) => void;
+}
 
-const Signin: React.FC = () => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [isMounted, setIsMounted] = useState(false);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const router = useRouter();
+const Signdialog: React.FC<SigndialogProps> = ({ isOpen, setIsOpen }) => {
+    const [isMounted, setIsMounted] = useState(false)
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const router = useRouter()
 
     useEffect(() => {
-        setIsMounted(true);
-    }, []);
+        setIsMounted(true)
+    }, [])
 
     const closeModal = () => {
-        setIsOpen(false);
-    };
+        setIsOpen(false)
+    }
 
     const openModal = () => {
-        setIsOpen(true);
-    };
+        setIsOpen(true)
+    }
 
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
-    
-        try {
-            const response = await fetch('http://51.77.230.180:8000/api/v1/auth/jwt/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email,
-                    password,
-                }),
-            });
-    
-            const data = await response.json();
-            console.log('API Response:', data);
-    
-            if (response.ok) {
-                if (data.access) {
-                    localStorage.setItem('token', data.access);
-                    console.log('Access token saved:', data.access);
-    
-                    // Defer the navigation to avoid the render issue
-                    setTimeout(() => {
-                        router.push('/Mainpage');
-                    }, 0);  // This defers the push call until after the current render
-                } else {
-                    alert('No access token received from the server');
-                }
+    const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+
+        // Make the request to the backend for JWT
+        const response = await fetch('http://51.77.230.180:8000/api/v1/auth/jwt/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+        })
+
+        if (response.ok) {
+            const data = await response.json()
+            if (data.access) {
+                // Store token in localStorage
+                localStorage.setItem('token', data.access)
+                console.log('Access token received:', data.access)
+                router.push('/Mainpage')
             } else {
-                alert('Invalid credentials');
+                alert('No access token received')
             }
-        } catch (error) {
-            console.error('Error during login:', error);
-            alert('An error occurred. Please try again.');
+        } else {
+            alert('Invalid credentials')
         }
-    };
+    }
 
     if (!isMounted) {
-        return null; // Prevent rendering the component during SSR
+        return null
     }
+
     return (
         <>
             <div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:pr-0">
@@ -204,4 +194,4 @@ const Signin: React.FC = () => {
     )
 }
 
-export default Signin;
+export default Signdialog

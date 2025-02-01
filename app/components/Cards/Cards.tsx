@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { FaHeart, FaShareAlt, FaEye } from "react-icons/fa";
+import { FaHeart, FaShareAlt, FaEye, FaTimes } from "react-icons/fa";
 import EventCard from "../PostEvent/EventCard";
 
 interface CardProps {
@@ -13,7 +13,7 @@ interface CardProps {
     title: string;
     description: string;
     startDate: string;
-    endDate: string;
+    
     location: string;
     image: string;
     creator: {
@@ -21,15 +21,22 @@ interface CardProps {
       avatar: string;
     };
     participants: number;
+    external_link: string;
   };
 }
 
 const Card: React.FC<CardProps> = ({ image, title, description, avatar, author, eventData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = () => setIsModalOpen(true);
+  const openModal = () => {
+    console.log("Opening modal..."); // Debugging log
+    setIsModalOpen(true);
+  };
 
-  const closeModal = () => setIsModalOpen(false);
+  const closeModal = () => {
+    console.log("Closing modal..."); // Debugging log
+    setIsModalOpen(false);
+  };
 
   return (
     <div className="max-w-sm mx-auto bg-gray-100 shadow-lg rounded-lg overflow-hidden sm:max-w-md md:max-w-lg lg:max-w-xl">
@@ -68,34 +75,43 @@ const Card: React.FC<CardProps> = ({ image, title, description, avatar, author, 
             </span>
           </div>
           <span className="mx-1 text-xs text-gray-600">|</span>
-          <span className="mx-1 text-xs text-gray-600">5 min read</span>
+          
         </div>
         <div className="mt-4 flex justify-between items-center">
           <button className="px-4 py-2 bg-blue-600 text-white text-xs font-semibold rounded hover:bg-blue-700 transition duration-300 transform hover:scale-105">
             Explore More
           </button>
-          <div className="flex items-center space-x-4">
-            <FaHeart className="text-red-500 cursor-pointer hover:text-red-600 transition duration-300 transform hover:scale-110" />
-            <FaShareAlt className="text-blue-600 cursor-pointer hover:text-blue-700 transition duration-300 transform hover:scale-110" />
-          </div>
+          
         </div>
       </div>
-
       {/* Modal */}
       {isModalOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-          onClick={closeModal}
         >
           <div
             className="flex-grow overflow-y-scroll scrollbar-hidden"
           >
-            <EventCard eventData={eventData} />
+            {/* EventCard */}
+            <div
+              className="relative"
+              onClick={(e) => e.stopPropagation()} // Prevent close when clicking inside the modal
+            >
+              <EventCard eventData={eventData} />
+            </div>
+          </div>
+          {/* Close button */}
+          <div className="absolute top-10 mx-20">
+            <button
+              onClick={closeModal} // Close modal only when this button is clicked
+              className="text-white p-2 rounded-full bg-red"
+            >
+              <FaTimes size={20} />
+            </button>
           </div>
         </div>
       )}
     </div>
   );
 };
-
 export default Card;

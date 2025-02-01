@@ -14,8 +14,15 @@ type UserData = {
     country: string;
 };
 
-const Register = () => {
-    let [isOpen, setIsOpen] = useState(false);
+
+interface SignupdialogProps {
+    isOpen: boolean;
+    setIsOpen: (isOpen: boolean) => void;
+}
+
+
+const Register: React.FC<SignupdialogProps>= ({ isOpen, setIsOpen }) => {
+
     let [successOpen, setSuccessOpen] = useState(false);
     let [errorMessage, setErrorMessage] = useState<string | null>(null); // State for error message
     let [successMessage, setSuccessMessage] = useState<string | null>(null); // State for success message
