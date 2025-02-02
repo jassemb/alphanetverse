@@ -12,7 +12,7 @@ export default NextAuth({
         password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
-        const res = await fetch("http://51.77.230.180:8000/api/v1/auth/jwt/", {
+        const res = await fetch("https://api.alphanetverse.com/api/v1/auth/jwt/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

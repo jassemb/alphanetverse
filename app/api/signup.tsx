@@ -28,7 +28,7 @@ interface SignupResponse {
         country: userData.country
       });
   
-      const response = await fetch(`http://51.77.230.180:8000/api/v2/auth/register/${referralCode}`, {
+      const response = await fetch(`https://api.alphanetverse.com/api/v2/auth/register/${referralCode}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

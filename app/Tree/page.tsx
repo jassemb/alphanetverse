@@ -21,7 +21,7 @@ export default function Dashbordpage() {
       }
 
       try {
-        const response = await fetch("http://51.77.230.180:8000/api/v1/me/", {
+        const response = await fetch("https://api.alphanetverse.com/api/v1/me/", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

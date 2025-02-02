@@ -88,7 +88,7 @@ const UserMatrixTree: React.FC = () => {
       }
 
       try {
-        const response = await fetch("http://51.77.230.180:8000/api/v1/tree/", {
+        const response = await fetch("https://api.alphanetverse.com/api/v1/tree/", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

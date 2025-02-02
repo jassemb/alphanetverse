@@ -29,7 +29,7 @@ const CardList: React.FC = () => {
       }
 
       try {
-        const response = await fetch("http://51.77.230.180:8000/api/v1/feeds/all/", {
+        const response = await fetch("https://api.alphanetverse.com/api/v1/feeds/all/", {
           headers: {
             Authorization: `Bearer ${token}`, // Use the token dynamically
           },

@@ -30,7 +30,7 @@ const Signdialog: React.FC<SigndialogProps> = ({ isOpen, setIsOpen }) => {
         event.preventDefault()
 
         // Make the request to the backend for JWT
-        const response = await fetch('http://51.77.230.180:8000/api/v1/auth/jwt/', {
+        const response = await fetch('https://api.alphanetverse.com/api/v1/auth/jwt/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password }),
