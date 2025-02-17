@@ -101,7 +101,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ profileData }) => {
                   className={`text-xl font-bold ${profileData.walletBalance > 1000 ? "text-green-500" : "text-red-500"
                     }`}
                 >
-                  ${profileData.walletBalance?.toLocaleString() || "0"}
+                  AC{profileData.walletBalance?.toLocaleString() || "0"}
                 </p>
               </div>
 
@@ -127,7 +127,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ profileData }) => {
                       <span
                         className={tx.type === "received" ? "text-green-500" : "text-red-500"}
                       >
-                        {tx.type === "received" ? "+" : "-"}${Math.abs(tx.amount)}
+                        {tx.type === "received" ? "+" : "-"}AC{Math.abs(tx.amount)}
                       </span>
                     </div>
                   ))

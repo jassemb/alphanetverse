@@ -220,7 +220,7 @@ const UserDashboard: React.FC = () => {
                 {/* Wallet Section */}
                 <div className="bg-ultramarine col-span-1 md:col-span-2 p-6 rounded-xl text-white">
                     <h2 className="text-2xl font-bold mb-4">Wallet Balance</h2>
-                    <div className="text-4xl font-bold mb-6">${walletInfo?.ac_cash || "N/A"}</div>
+                    <div className="text-4xl font-bold mb-6">AC {walletInfo?.ac_cash || "N/A"}</div>
                     <div className="grid grid-cols-3 gap-4">
                         <button className="flex items-center justify-center p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors">
                             <FiArrowDownLeft className="mr-2" /> Withdraw
